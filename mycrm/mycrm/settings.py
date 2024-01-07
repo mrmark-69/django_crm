@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 from os import getenv
 from pathlib import Path
 
@@ -25,9 +26,22 @@ SECRET_KEY = getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv("DJANGO_DEBUG", default=0)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS").split(" ")
+
+INTERNAL_IPS = [
+    "127.0.0.1"
+]
+
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append("10.0.0.2")
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind(".")] + ".1" for ip in ips]
+    )
+
 
 # Application definition
 
@@ -39,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'crm_system.apps.CrmSystemConfig',
+    'crmapp.apps.CrmappConfig',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +91,12 @@ WSGI_APPLICATION = 'mycrm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mycrm',
+        'USER': 'admin',
+        'PASSWORD': '4210',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -115,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
