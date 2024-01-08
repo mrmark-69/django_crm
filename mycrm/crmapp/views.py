@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
 from .forms import AdvertisingForm, ConfirmForm
-from .models import Advertising, Service, Contract, Lead
+from .models import Advertising, Service, Contract, Lead, Customer
 
 log = logging.getLogger(__name__)
 
@@ -223,6 +223,50 @@ class LeadDeleteView(UserPassesTestMixin, DeleteView):
 
 
 class CustomersListView(ListView):
-    queryset = Lead.objects.filter(is_active=True)
+    queryset = Customer.objects.all().select_related('customer', 'contract')
     template_name = 'crmapp/customers/customers-list.html'
     context_object_name = 'customers'
+
+
+class CustomerDetailView(DetailView):
+    queryset = Customer.objects.all().select_related('customer', 'contract')
+    template_name = 'crmapp/customers/customers-detail.html'
+    context_object_name = 'object'
+
+
+class CustomerCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('crmapp.add_customer')
+
+    model = Customer
+    fields = '__all__'
+    template_name = 'crmapp/customers/customers-create.html'
+    success_url = reverse_lazy('crmapp:customers')
+
+
+class CustomerUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('crmapp.change_customer')
+
+    model = Customer
+    fields = '__all__'
+    template_name = 'crmapp/customers/customers-edit.html'
+
+    def get_success_url(self):
+        return reverse(
+            'crmapp:customers_detail',
+            kwargs={'pk': self.object.pk}
+        )
+
+
+class CustomerDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('crmapp.delete_lead')
+
+    model = Customer
+    form_class = ConfirmForm
+    template_name = 'crmapp/customers/customers-delete.html'
+    success_url = reverse_lazy('crmapp:customers')

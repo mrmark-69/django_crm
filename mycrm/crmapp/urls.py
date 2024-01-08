@@ -28,4 +28,9 @@ urlpatterns = [
     path("leads/<int:pk>", views.LeadDetailView.as_view(), name="leads_detail"),
     path("leads/<int:pk>/delete", views.LeadDeleteView.as_view(), name="delete_lead"),
     path("customers/", views.CustomersListView.as_view(), name="customers"),
+    path("customers/new", views.CustomerCreateView.as_view(), name="add_customers"),
+    path("customers/<int:pk>", views.CustomerDetailView.as_view(), name="customers"),
+    path("customers/<int:pk>/edit", views.CustomerUpdateView.as_view(), name="update_customer"),
+    path("customers/<int:pk>/delete", views.CustomerDeleteView.as_view(), name="delete_customers"),
+
 ]

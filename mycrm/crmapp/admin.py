@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import path
 
-from crmapp.models import Advertising, Service, Lead, Contract
+from crmapp.models import Advertising, Service, Lead, Contract, Customer
 
 
 @admin.register(Service)
@@ -39,8 +39,8 @@ class AdvertisingAdmin(admin.ModelAdmin):
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = "id", "first_name", "phone", "email", "campaign",
-    list_display_links = "id", "first_name", "phone",
+    list_display = "id", "full_name", "phone", "email", "campaign",
+    list_display_links = "id", "full_name", "phone",
     ordering = "id", "first_name",
     search_fields = "first_name", "phone", "id"
     fieldsets = [
@@ -48,6 +48,30 @@ class LeadAdmin(admin.ModelAdmin):
             "fields": ("first_name", "last_name", "phone", "email", "campaign"),
         }),
     ]
+
+    def full_name(self, obj: Lead) -> str:
+        return f"{obj.last_name} {obj.first_name}"
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = "id", "user_first_name", "user_last_name", "contract",
+    list_display_links = "id", "user_last_name", "contract",
+    ordering = "id", "customer",
+    search_fields = "customer", "contract", "id"
+    fieldsets = [
+        (None, {
+            "fields": ("customer", "contract",),
+        }),
+    ]
+
+    def user_first_name(self, obj: Customer) -> str:
+        return obj.customer.first_name
+
+    def user_last_name(self, obj: Customer) -> str:
+        return obj.customer.last_name
+
+
 
 
 @admin.register(Contract)

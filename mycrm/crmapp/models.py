@@ -40,10 +40,9 @@ class Lead(models.Model):
     phone = models.CharField(max_length=20)
     email = models.EmailField()
     campaign = models.ForeignKey(Advertising, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.full_name
+        return f"{self.first_name} {self.last_name}"
 
 
 class Contract(models.Model):
@@ -62,7 +61,10 @@ class Contract(models.Model):
         return self.name
 
 
-# class Customers(models.Model):
-#     first_name = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True)
-#     last_name = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True)
-#     is_active = models.BooleanField(default=False)
+class Customer(models.Model):
+    customer = models.OneToOneField(Lead, on_delete=models.CASCADE, )
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, )
+
+    def __str__(self) -> str:
+        # noinspection PyUnresolvedReferences
+        return f"{self.customer.last_name} {self.customer.first_name} {self.customer.phone}"
