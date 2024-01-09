@@ -13,6 +13,8 @@ import os
 from os import getenv
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +30,12 @@ SECRET_KEY = getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True#getenv("DJANGO_DEBUG", default=0)
 
-ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = [
+    "0.0.0.0",
+    "127.0.0.1",
+    "localhost",
+] + getenv("DJANGO_ALLOWED_HOSTS", "").split(" ")
+
 
 INTERNAL_IPS = [
     "127.0.0.1"
@@ -135,6 +142,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = reverse_lazy('crmapp:login')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

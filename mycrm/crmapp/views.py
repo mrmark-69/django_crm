@@ -1,8 +1,10 @@
 import logging
 
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
@@ -11,6 +13,39 @@ from .forms import AdvertisingForm, ConfirmForm
 from .models import Advertising, Service, Contract, Lead, Customer
 
 log = logging.getLogger(__name__)
+
+
+# def login_view(request):
+#     username = request.POST["username"]
+#     password = request.POST["password"]
+#     user = authenticate(request, username=username, password=password)
+#     if user is not None:
+#         login(request, user)
+#         # Redirect to a success page.
+#         ...
+#     else:
+#         # Return an 'invalid login' error message.
+#         ...
+def login_user(request):
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'You have been logged in')
+            return redirect("crmapp:home")
+        else:
+            messages.success(request, 'There was an error. Please try again...')
+            return redirect('crmapp:login')
+    else:
+        return render(request, 'crmapp/registration/login.html', {})
+
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, 'You have been logged out...')
+    return redirect('')
 
 
 class AdvertisingListView(ListView):
@@ -223,15 +258,15 @@ class LeadDeleteView(UserPassesTestMixin, DeleteView):
 
 
 class CustomersListView(ListView):
-    queryset = Customer.objects.all().select_related('customer', 'contract')
+    queryset = Customer.objects.all()
     template_name = 'crmapp/customers/customers-list.html'
     context_object_name = 'customers'
 
 
 class CustomerDetailView(DetailView):
-    queryset = Customer.objects.all().select_related('customer', 'contract')
+    queryset = Customer.objects.all()
     template_name = 'crmapp/customers/customers-detail.html'
-    context_object_name = 'object'
+    # context_object_name = 'customers'
 
 
 class CustomerCreateView(UserPassesTestMixin, CreateView):

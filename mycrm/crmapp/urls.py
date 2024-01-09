@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LoginView
 from django.urls import path
 from django.views.generic import TemplateView
 
@@ -6,7 +7,9 @@ from crmapp import views
 app_name = 'crmapp'
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="crmapp/ads/ads-index.html")),
+    path("accounts/logout/", views.logout_user, name="logout"),
+    path("accounts/login/", views.login_user, name="login"),
+    path("", TemplateView.as_view(template_name="crmapp/_base.html"), name='home'),
     path("ads/", views.AdvertisingListView.as_view(), name="ads"),
     path("ads/new", views.AdvertisingCreateView.as_view(), name="ads_new"),
     path("ads/<int:pk>", views.AdvertisingDetailView.as_view(), name="ads_details"),
@@ -29,7 +32,7 @@ urlpatterns = [
     path("leads/<int:pk>/delete", views.LeadDeleteView.as_view(), name="delete_lead"),
     path("customers/", views.CustomersListView.as_view(), name="customers"),
     path("customers/new", views.CustomerCreateView.as_view(), name="add_customers"),
-    path("customers/<int:pk>", views.CustomerDetailView.as_view(), name="customers"),
+    path("customers/<int:pk>", views.CustomerDetailView.as_view(), name="customers_detail"),
     path("customers/<int:pk>/edit", views.CustomerUpdateView.as_view(), name="update_customer"),
     path("customers/<int:pk>/delete", views.CustomerDeleteView.as_view(), name="delete_customers"),
 

@@ -55,22 +55,24 @@ class LeadAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = "id", "user_first_name", "user_last_name", "contract",
-    list_display_links = "id", "user_last_name", "contract",
-    ordering = "id", "customer",
-    search_fields = "customer", "contract", "id"
+    list_display = "id", "full_name", "contract",
+    list_display_links = "id", "full_name", "contract",
+    ordering = "id", "lead",
+    search_fields = "lead", "contract", "id"
     fieldsets = [
         (None, {
-            "fields": ("customer", "contract",),
+            "fields": ("lead", "contract",),
         }),
     ]
 
-    def user_first_name(self, obj: Customer) -> str:
-        return obj.customer.first_name
+    # def first_name(self, obj: Customer) -> str:
+    #     return obj.lead.first_name
+    #
+    # def last_name(self, obj: Customer) -> str:
+    #     return obj.lead.last_name
 
-    def user_last_name(self, obj: Customer) -> str:
-        return obj.customer.last_name
-
+    def full_name(self, obj: Customer) -> str:
+        return f"{obj.lead.last_name} {obj.lead.first_name}"
 
 
 

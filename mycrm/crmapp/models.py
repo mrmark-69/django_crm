@@ -7,7 +7,7 @@ class Service(models.Model):
         verbose_name = 'service'
 
     name = models.CharField(max_length=100, verbose_name="Name of service", db_index=True)
-    description = models.CharField(max_length=200, null=False, blank=True)
+    description = models.CharField(max_length=500, null=False, blank=True, db_index=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self) -> str:
@@ -62,9 +62,9 @@ class Contract(models.Model):
 
 
 class Customer(models.Model):
-    customer = models.OneToOneField(Lead, on_delete=models.CASCADE, )
+    lead = models.OneToOneField(Lead, on_delete=models.CASCADE, )
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE, )
 
     def __str__(self) -> str:
         # noinspection PyUnresolvedReferences
-        return f"{self.customer.last_name} {self.customer.first_name} {self.customer.phone}"
+        return f"{self.lead.last_name} {self.lead.first_name} {self.lead.phone}"
