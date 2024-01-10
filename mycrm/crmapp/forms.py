@@ -1,8 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import Group
-from django.forms import ModelForm
-from .models import Advertising, Service, Customer
+from .models import Advertising, Service
 
 
 class AdvertisingForm(forms.ModelForm):

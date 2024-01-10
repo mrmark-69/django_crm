@@ -3,7 +3,6 @@ import logging
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy, reverse
@@ -15,37 +14,26 @@ from .models import Advertising, Service, Contract, Lead, Customer
 log = logging.getLogger(__name__)
 
 
-# def login_view(request):
-#     username = request.POST["username"]
-#     password = request.POST["password"]
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#         login(request, user)
-#         # Redirect to a success page.
-#         ...
-#     else:
-#         # Return an 'invalid login' error message.
-#         ...
 def login_user(request):
     if request.method == 'POST':
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username = request.POST['username']
+        password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        if user is not None:
+        if user is not None and user.is_active:
             login(request, user)
-            messages.success(request, 'You have been logged in')
+            # messages.success(request, 'You have been logged in')
             return redirect("crmapp:home")
         else:
-            messages.success(request, 'There was an error. Please try again...')
+            # messages.success(request, 'There was an error. Please try again...')
             return redirect('crmapp:login')
     else:
-        return render(request, 'crmapp/registration/login.html', {})
+        return render(request, 'crmapp/registration/login.html')
 
 
 def logout_user(request):
     logout(request)
-    messages.success(request, 'You have been logged out...')
-    return redirect('')
+    # messages.success(request, 'You have been logged out...')
+    return redirect('crmapp:home')
 
 
 class AdvertisingListView(ListView):
