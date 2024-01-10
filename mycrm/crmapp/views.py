@@ -1,6 +1,5 @@
 import logging
 
-from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.shortcuts import render, redirect
@@ -21,10 +20,8 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None and user.is_active:
             login(request, user)
-            # messages.success(request, 'You have been logged in')
             return redirect("crmapp:home")
         else:
-            # messages.success(request, 'There was an error. Please try again...')
             return redirect('crmapp:login')
     else:
         return render(request, 'crmapp/registration/login.html')
@@ -32,7 +29,6 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    # messages.success(request, 'You have been logged out...')
     return redirect('crmapp:home')
 
 
@@ -91,14 +87,16 @@ class AdvertisingDeleteView(UserPassesTestMixin, DeleteView):
     template_name = "crmapp/ads/ads-delete.html"
 
 
+class StatisticListView(ListView):
+    queryset = Advertising.objects.all()
+    template_name = 'crmapp/ads/ads-statistic.html'
+    context_object_name = 'ads'
+
+
 class ServicesListView(ListView):
     queryset = Service.objects.all()
     template_name = 'crmapp/products/products-list.html'
     context_object_name = 'products'
-
-
-def statistic_list(request):
-    return render(request, 'crmapp/ads/ads-statistic.html', context={})
 
 
 class ServiceDetailView(LoginRequiredMixin, DetailView):
@@ -293,3 +291,21 @@ class CustomerDeleteView(UserPassesTestMixin, DeleteView):
     form_class = ConfirmForm
     template_name = 'crmapp/customers/customers-delete.html'
     success_url = reverse_lazy('crmapp:customers')
+
+
+def statistic(request):
+    products_count = len(Service.objects.all())
+    advertisements_count = len(Advertising.objects.all())
+    leads_count = len(Lead.objects.all())
+    customers_count = len(Customer.objects.all())
+    context = {
+        'products_count': products_count,
+        'advertisements_count': advertisements_count,
+        'leads_count': leads_count,
+        'customers_count': customers_count,
+    }
+    return render(
+        request,
+        'crmapp/users/index.html',
+        context=context
+    )

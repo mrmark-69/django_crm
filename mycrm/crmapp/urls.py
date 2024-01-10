@@ -15,7 +15,7 @@ urlpatterns = [
     path("ads/<int:pk>", views.AdvertisingDetailView.as_view(), name="ads_details"),
     path("ads/<int:pk>/edit", views.AdvertisingUpdateView.as_view(), name="update_ads"),
     path("ads/<int:pk>/delete", views.AdvertisingDeleteView.as_view(), name="delete_ads"),
-    path("ads/statistic", views.statistic_list, name="ads_statistic"),
+    path("ads/statistic", views.StatisticListView.as_view(), name="ads_statistic"),
     path("products/", views.ServicesListView.as_view(), name="services_list"),
     path("products/<int:pk>", views.ServiceDetailView.as_view(), name="service_details"),
     path("products/<int:pk>/edit", views.ServiceUpdateView.as_view(), name="service_update"),
@@ -35,5 +35,5 @@ urlpatterns = [
     path("customers/<int:pk>", views.CustomerDetailView.as_view(), name="customers_detail"),
     path("customers/<int:pk>/edit", views.CustomerUpdateView.as_view(), name="update_customer"),
     path("customers/<int:pk>/delete", views.CustomerDeleteView.as_view(), name="delete_customers"),
-
+    path("users/statistic/", views.statistic, name='user_statistic')
 ]
