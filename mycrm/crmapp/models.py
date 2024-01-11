@@ -51,7 +51,7 @@ class Contract(models.Model):
 
     name = models.CharField(max_length=255)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True)
-    document = models.FileField(null=True, blank=True, upload_to="contracts/")
+    document = models.FileField(null=True, blank=True, upload_to="contracts_files/")
     date_signed = models.DateField()
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)

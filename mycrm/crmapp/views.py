@@ -93,55 +93,55 @@ class StatisticListView(ListView):
     context_object_name = 'ads'
 
 
-class ServicesListView(ListView):
-    queryset = Service.objects.all()
-    template_name = 'crmapp/products/products-list.html'
-    context_object_name = 'products'
-
-
-class ServiceDetailView(LoginRequiredMixin, DetailView):
-    queryset = (
-        Service.objects.all()
-    )
-    template_name = "crmapp/products/products-detail.html"
-
-
-class ServiceCreateView(UserPassesTestMixin, CreateView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('crmapp.add_service')
-
-    model = Service
-    fields = '__all__'
-    template_name = "crmapp/products/products-create.html"
-    success_url = reverse_lazy("crmapp:services_list")
-
-
-class ServiceUpdateView(UserPassesTestMixin, UpdateView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('crmapp.change_service')
-
-    model = Service
-    fields = '__all__'
-    template_name = "crmapp/products/products-edit.html"
-
-    def get_success_url(self):
-        return reverse(
-            "crmapp:service_details",
-            kwargs={"pk": self.object.pk},
-        )
-
-
-class ServiceDeleteView(UserPassesTestMixin, DeleteView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('crmapp.delete_service')
-
-    model = Service
-    form_class = ConfirmForm
-    success_url = reverse_lazy("crmapp:services_list")
-    template_name = "crmapp/products/products-delete.html"
+# class ServicesListView(ListView):
+#     queryset = Service.objects.all()
+#     template_name = 'crmapp/products/products-list.html'
+#     context_object_name = 'products'
+#
+#
+# class ServiceDetailView(LoginRequiredMixin, DetailView):
+#     queryset = (
+#         Service.objects.all()
+#     )
+#     template_name = "crmapp/products/products-detail.html"
+#
+#
+# class ServiceCreateView(UserPassesTestMixin, CreateView):
+#     def test_func(self):
+#         user = self.request.user
+#         return user.is_superuser or user.has_perm('crmapp.add_service')
+#
+#     model = Service
+#     fields = '__all__'
+#     template_name = "crmapp/products/products-create.html"
+#     success_url = reverse_lazy("crmapp:services_list")
+#
+#
+# class ServiceUpdateView(UserPassesTestMixin, UpdateView):
+#     def test_func(self):
+#         user = self.request.user
+#         return user.is_superuser or user.has_perm('crmapp.change_service')
+#
+#     model = Service
+#     fields = '__all__'
+#     template_name = "crmapp/products/products-edit.html"
+#
+#     def get_success_url(self):
+#         return reverse(
+#             "crmapp:service_details",
+#             kwargs={"pk": self.object.pk},
+#         )
+#
+#
+# class ServiceDeleteView(UserPassesTestMixin, DeleteView):
+#     def test_func(self):
+#         user = self.request.user
+#         return user.is_superuser or user.has_perm('crmapp.delete_service')
+#
+#     model = Service
+#     form_class = ConfirmForm
+#     success_url = reverse_lazy("crmapp:services_list")
+#     template_name = "crmapp/products/products-delete.html"
 
 
 class ContractsListView(ListView):
