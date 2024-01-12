@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-
+from ads.models import Advertisement
 
 
 class ConfirmForm(forms.Form):
@@ -13,3 +13,7 @@ class ConfirmForm(forms.Form):
         return super(ConfirmForm, self).clean()
 
 
+class AdvertisementForm(forms.ModelForm):
+    class Meta:
+        model = Advertisement
+        fields = '__all__'

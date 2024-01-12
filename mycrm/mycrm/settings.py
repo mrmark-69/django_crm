@@ -63,7 +63,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'crmapp.apps.CrmappConfig',
+    'ads.apps.AdsConfig',
     'products.apps.ProductsConfig',
+    'leads.apps.LeadsConfig',
+    'customers.apps.CustomersConfig',
+    'contracts.apps.ContractsConfig',
 ]
 
 MIDDLEWARE = [
