@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
+from contracts.forms import ContractUpdateForm
 from contracts.models import Contract
 from homepage.forms import ConfirmForm
 
@@ -20,9 +21,9 @@ class ContractCreateView(UserPassesTestMixin, CreateView):
         return user.is_superuser or user.has_perm('contracts.add_contract')
 
     model = Contract
-    fields = '__all__'
     success_url = reverse_lazy("contracts:contracts_list")
     template_name = "contracts/contracts-create.html"
+    form_class = ContractUpdateForm
 
 
 class ContractUpdateView(UserPassesTestMixin, UpdateView):
@@ -31,8 +32,8 @@ class ContractUpdateView(UserPassesTestMixin, UpdateView):
         return user.is_superuser or user.has_perm('contracts.change_contract')
 
     model = Contract
-    fields = '__all__'
     template_name = "contracts/contracts-edit.html"
+    form_class = ContractUpdateForm
 
     def get_success_url(self):
         return reverse(
@@ -55,4 +56,3 @@ class ContractDeleteView(DeleteView):
     form_class = ConfirmForm
     success_url = reverse_lazy("contracts:contracts_list")
     template_name = "contracts/contracts-delete.html"
-
