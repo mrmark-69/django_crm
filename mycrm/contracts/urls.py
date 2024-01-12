@@ -2,6 +2,8 @@ from django.urls import path
 
 from contracts import views
 
+app_name = 'contracts'
+
 urlpatterns = [
     path("contracts/", views.ContractsListView.as_view(), name="contracts_list"),
     path("contracts/new", views.ContractCreateView.as_view(), name="add_contract"),

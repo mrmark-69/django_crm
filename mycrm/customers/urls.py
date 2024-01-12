@@ -2,6 +2,8 @@ from django.urls import path
 
 from customers import views
 
+app_name = 'customers'
+
 urlpatterns = [
     path("customers/", views.CustomersListView.as_view(), name="customers_list"),
     path("customers/new", views.CustomerCreateView.as_view(), name="add_customers"),

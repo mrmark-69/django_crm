@@ -7,7 +7,7 @@ class Contract(models.Model):
     class Meta:
         verbose_name = 'contract'
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     document = models.FileField(null=True, blank=True, upload_to="media/contracts/")
     date_signed = models.DateField()
