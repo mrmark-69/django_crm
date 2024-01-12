@@ -15,6 +15,8 @@ from pathlib import Path
 
 from django.urls import reverse_lazy
 
+import products.apps
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,14 +30,13 @@ SECRET_KEY = getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True#getenv("DJANGO_DEBUG", default=0)
+DEBUG = True  # getenv("DJANGO_DEBUG", default=0)
 
 ALLOWED_HOSTS = [
-    "0.0.0.0",
-    "127.0.0.1",
-    "localhost",
-] + getenv("DJANGO_ALLOWED_HOSTS", "").split(" ")
-
+                    "0.0.0.0",
+                    "127.0.0.1",
+                    "localhost",
+                ] + getenv("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
 INTERNAL_IPS = [
     "127.0.0.1"
@@ -43,12 +44,12 @@ INTERNAL_IPS = [
 
 if DEBUG:
     import socket
+
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS.append("10.0.0.2")
     INTERNAL_IPS.extend(
         [ip[: ip.rfind(".")] + ".1" for ip in ips]
     )
-
 
 # Application definition
 
@@ -60,7 +61,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'crmapp.apps.CrmappConfig',
+    'ads.apps.AdsConfig',
+    'products.apps.ProductsConfig',
+    'leads.apps.LeadsConfig',
+    'customers.apps.CustomersConfig',
+    'contracts.apps.ContractsConfig',
+    'registration.apps.RegistrationConfig',
+    'homepage.apps.HomepageConfig',
 ]
 
 MIDDLEWARE = [
@@ -142,8 +149,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
-LOGIN_REDIRECT_URL = reverse_lazy('crmapp:home')
-LOGIN_URL = reverse_lazy('crmapp:login')
+LOGIN_REDIRECT_URL = reverse_lazy('homepage:home')
+LOGIN_URL = reverse_lazy('registration:login')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
