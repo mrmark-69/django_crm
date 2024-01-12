@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from ads.forms import ConfirmForm
+from homepage.forms import ConfirmForm
 from leads.models import Lead
 
 

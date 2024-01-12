@@ -3,8 +3,8 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from ads.forms import ConfirmForm
 from contracts.models import Contract
+from homepage.forms import ConfirmForm
 
 
 class ContractsListView(ListView):

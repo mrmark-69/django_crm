@@ -3,8 +3,9 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from ads.forms import AdvertisementForm, ConfirmForm
+from ads.forms import AdvertisementForm
 from ads.models import Advertisement
+from homepage.forms import ConfirmForm
 
 
 class AdvertisementsListView(ListView):
@@ -57,7 +58,7 @@ class AdvertisementDeleteView(UserPassesTestMixin, DeleteView):
         return user.is_superuser or user.has_perm('ads.delete_advertisement')
 
     model = Advertisement
-    success_url = reverse_lazy("crmapp:ads")
+    success_url = reverse_lazy("homepage:ads")
     form_class = ConfirmForm
     template_name = "ads/ads-delete.html"
 

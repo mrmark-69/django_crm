@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from crmapp.forms import ConfirmForm
+from homepage.forms import ConfirmForm
 from products.models import Product
 
 

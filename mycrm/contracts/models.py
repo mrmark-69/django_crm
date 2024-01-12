@@ -9,7 +9,7 @@ class Contract(models.Model):
 
     name = models.CharField(max_length=255)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    document = models.FileField(null=True, blank=True, upload_to="contracts_files/")
+    document = models.FileField(null=True, blank=True, upload_to="media/contracts/")
     date_signed = models.DateField()
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
