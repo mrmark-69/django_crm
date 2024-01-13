@@ -2,11 +2,16 @@ asgiref==3.7.2
 astroid==3.0.2
 dill==0.3.7
 Django==5.0
+django-stubs-ext==4.2.7
+gunicorn==21.2.0
 isort==5.13.2
 mccabe==0.7.0
+packaging==23.2
 platformdirs==4.1.0
 psycopg2-binary==2.9.9
 pylint==3.0.2
-python-dotenv==1.0.0
 sqlparse==0.4.4
 tomlkit==0.12.3
+types-pytz==2023.3.1.1
+types-PyYAML==6.0.12.12
+typing_extensions==4.9.0

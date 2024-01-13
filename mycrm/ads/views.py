@@ -1,15 +1,11 @@
-from typing import Any
-
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Avg, Count, Min, Max, Sum, F, ExpressionWrapper, DecimalField
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
 from ads.forms import AdvertisementForm
 from ads.models import Advertisement
 from homepage.forms import ConfirmForm
-from products.models import Product
 
 
 class AdvertisementsListView(ListView):
@@ -76,7 +72,7 @@ class StatisticListView(ListView):
         queryset = Advertisement.objects.annotate(
             leads_count=Count('lead__pk', distinct=True),  # Подсчитываем количество лидов
             customers_count=Count('lead__customer', distinct=True),  # Подсчитываем количество активных клиентов
-            products_sum=Sum('product__price', distinct=True), # Подсчитываем стоимость продукта
+            products_sum=Sum('product__price', distinct=True),  # Подсчитываем стоимость продукта
             profit=ExpressionWrapper(
                 F('products_sum') / F('advertisement_budget'),
                 output_field=DecimalField(),  # Считаем соотношение контрактов к затратам

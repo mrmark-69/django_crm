@@ -6,7 +6,7 @@ from leads.models import Lead
 
 class Customer(models.Model):
     lead = models.OneToOneField(Lead, on_delete=models.CASCADE, )
-    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, )
+    contract = models.OneToOneField(Contract, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         # noinspection PyUnresolvedReferences
