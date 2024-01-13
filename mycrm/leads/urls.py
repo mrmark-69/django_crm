@@ -2,6 +2,8 @@ from django.urls import path
 
 from leads import views
 
+app_name = 'leads'
+
 urlpatterns = [
     path("leads/", views.LeadsListView.as_view(), name="leads"),
     path("leads/new", views.LeadCreateView.as_view(), name="add_lead"),

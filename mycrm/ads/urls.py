@@ -2,6 +2,8 @@ from django.urls import path
 
 from ads import views
 
+app_name = 'ads'
+
 urlpatterns = [
     path("ads/", views.AdvertisementsListView.as_view(), name="ads"),
     path("ads/new", views.AdvertisementCreateView.as_view(), name="ads_new"),

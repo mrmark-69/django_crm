@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.shortcuts import render
+from django.db.models import Avg, Count, Min, Max, Sum, F, ExpressionWrapper, DecimalField
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
@@ -11,7 +11,7 @@ from homepage.forms import ConfirmForm
 class AdvertisementsListView(ListView):
     template_name = 'ads/ads-list.html'
     context_object_name = 'ads'
-    queryset = (Advertisement.objects.all().prefetch_related('product'))
+    queryset = Advertisement.objects.select_related('product').order_by('campaign_name')
 
 
 class AdvertisementCreateView(UserPassesTestMixin, CreateView):
@@ -48,7 +48,7 @@ class AdvertisementUpdateView(UpdateView):
 
 
 class AdvertisementDetailView(DetailView):
-    queryset = Advertisement.objects.all().select_related('product')
+    queryset = Advertisement.objects.select_related('product')
     template_name = 'ads/ads-detail.html'
 
 
@@ -64,6 +64,19 @@ class AdvertisementDeleteView(UserPassesTestMixin, DeleteView):
 
 
 class StatisticListView(ListView):
-    queryset = Advertisement.objects.all()
+    model = Advertisement
     template_name = 'ads/ads-statistic.html'
-    # context_object_name = 'ads'
+    context_object_name = 'ads'
+
+    def get_queryset(self):
+        queryset = Advertisement.objects.annotate(
+            leads_count=Count('lead__pk', distinct=True),  # Подсчитываем количество лидов
+            customers_count=Count('lead__customer', distinct=True),  # Подсчитываем количество активных клиентов
+            products_sum=Sum('product__price', distinct=True),  # Подсчитываем стоимость продукта
+            profit=ExpressionWrapper(
+                F('products_sum') / F('advertisement_budget'),
+                output_field=DecimalField(),  # Считаем соотношение контрактов к затратам
+            )
+        ).order_by('campaign_name')
+
+        return queryset

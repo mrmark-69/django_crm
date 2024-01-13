@@ -9,7 +9,7 @@ from leads.models import Lead
 class LeadsListView(ListView):
     template_name = 'leads/leads-list.html'
     context_object_name = 'leads'
-    queryset = (Lead.objects.all().select_related('campaign'))
+    queryset = (Lead.objects.select_related('campaign')).order_by('last_name')
 
 
 class LeadCreateView(UserPassesTestMixin, CreateView):
