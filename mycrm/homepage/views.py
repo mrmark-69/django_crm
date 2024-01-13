@@ -7,10 +7,10 @@ from products.models import Product
 
 
 def statistic(request):
-    products_count = len(Product.objects.all())
-    advertisements_count = len(Advertisement.objects.all())
-    leads_count = len(Lead.objects.all())
-    customers_count = len(Customer.objects.all())
+    products_count = Product.objects.count()
+    advertisements_count = Advertisement.objects.count()
+    leads_count = Lead.objects.count()
+    customers_count = Customer.objects.count()
     context = {
         'products_count': products_count,
         'advertisements_count': advertisements_count,

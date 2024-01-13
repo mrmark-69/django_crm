@@ -7,7 +7,7 @@ from homepage.forms import ConfirmForm
 
 
 class CustomersListView(ListView):
-    queryset = Customer.objects.all()
+    queryset = Customer.objects.order_by('lead__last_name')
     template_name = 'customers/customers-list.html'
     context_object_name = 'customers'
 

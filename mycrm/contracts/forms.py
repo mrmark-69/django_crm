@@ -3,7 +3,7 @@ from django.forms import SelectDateWidget, ModelForm
 from contracts.models import Contract
 
 
-class ContractUpdateForm(ModelForm):
+class ContractForm(ModelForm):
     class Meta:
         model = Contract
         fields = ('name', 'product', 'document', 'date_signed', 'start_date', 'end_date', 'amount')

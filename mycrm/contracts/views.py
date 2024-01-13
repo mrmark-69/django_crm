@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
-from contracts.forms import ContractUpdateForm
+from contracts.forms import ContractForm
 from contracts.models import Contract
 from homepage.forms import ConfirmForm
 
@@ -11,7 +11,7 @@ from homepage.forms import ConfirmForm
 class ContractsListView(ListView):
     template_name = 'contracts/contracts-list.html'
     context_object_name = 'contracts'
-    queryset = (Contract.objects.all().select_related('product'))
+    queryset = Contract.objects.select_related('product').order_by('date_signed')
 
 
 class ContractCreateView(UserPassesTestMixin, CreateView):
@@ -23,7 +23,7 @@ class ContractCreateView(UserPassesTestMixin, CreateView):
     model = Contract
     success_url = reverse_lazy("contracts:contracts_list")
     template_name = "contracts/contracts-create.html"
-    form_class = ContractUpdateForm
+    form_class = ContractForm
 
 
 class ContractUpdateView(UserPassesTestMixin, UpdateView):
@@ -33,7 +33,7 @@ class ContractUpdateView(UserPassesTestMixin, UpdateView):
 
     model = Contract
     template_name = "contracts/contracts-edit.html"
-    form_class = ContractUpdateForm
+    form_class = ContractForm
 
     def get_success_url(self):
         return reverse(
@@ -43,7 +43,7 @@ class ContractUpdateView(UserPassesTestMixin, UpdateView):
 
 
 class ContractDetailView(DetailView):
-    queryset = (Contract.objects.all().select_related('product'))
+    queryset = Contract.objects.select_related('product')
     template_name = "contracts/contracts-detail.html"
 
 
