@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.db.models import Avg, Count, Min, Max, Sum, F, ExpressionWrapper, DecimalField
+from django.db.models import Count, Sum, F, ExpressionWrapper, DecimalField
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
@@ -70,12 +70,13 @@ class StatisticListView(ListView):
 
     def get_queryset(self):
         queryset = Advertisement.objects.annotate(
-            leads_count=Count('lead__pk', distinct=True),  # Подсчитываем количество лидов
-            customers_count=Count('lead__customer', distinct=True),  # Подсчитываем количество активных клиентов
-            products_sum=Sum('product__price', distinct=True),  # Подсчитываем стоимость продукта
+            leads_count=Count('lead__pk', distinct=True),
+            customers_count=Count('lead__customer', distinct=True),
+            contracts_sum=Sum('lead__customer__contract__amount', distinct=True),
+            # products_sum=Sum('product__price', distinct=True),
             profit=ExpressionWrapper(
-                F('products_sum') / F('advertisement_budget'),
-                output_field=DecimalField(),  # Считаем соотношение контрактов к затратам
+                F('contracts_sum') / F('advertisement_budget'),
+                output_field=DecimalField(),
             )
         ).order_by('campaign_name')
 
