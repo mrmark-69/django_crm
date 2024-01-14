@@ -30,7 +30,7 @@ SECRET_KEY = getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv("DJANGO_DEBUG", default=0)
+DEBUG = True #getenv("DJANGO_DEBUG", default=0)
 
 ALLOWED_HOSTS = [
                     "0.0.0.0",
