@@ -27,4 +27,5 @@ urlpatterns = [
     path('', include('contracts.urls')),
     path('', include('registration.urls')),
     path('', include('homepage.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
