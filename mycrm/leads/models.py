@@ -8,6 +8,7 @@ class Lead(models.Model):
     objects = Manager()
 
     class Meta:
+        ordering = ['last_name']
         verbose_name = 'lead'
 
     first_name = models.CharField(max_length=25, null=True)
@@ -17,4 +18,4 @@ class Lead(models.Model):
     campaign = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.last_name} {self.first_name}"

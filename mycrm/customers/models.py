@@ -19,4 +19,4 @@ class Customer(models.Model):
 
     def __str__(self) -> str:
         # noinspection PyUnresolvedReferences
-        return f"{self.lead.last_name} {self.lead.first_name} {self.lead.phone}"
+        return f"{self.lead}"
