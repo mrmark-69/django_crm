@@ -5,9 +5,9 @@ from leads.models import Lead
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = "id", "full_name", "phone", "email", "campaign",
-    list_display_links = "id", "full_name", "phone",
-    ordering = "id", "first_name",
+    list_display = "id", "full_name", "phone", "email", "campaign"
+    list_display_links = "id", "full_name", "phone"
+    ordering = "id", "first_name"
     search_fields = "first_name", "phone", "id"
     fieldsets = [
         (None, {

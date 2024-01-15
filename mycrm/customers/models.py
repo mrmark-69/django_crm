@@ -1,10 +1,12 @@
 from django.db import models
+from django.db.models import Manager
 
 from contracts.models import Contract
 from leads.models import Lead
 
 
 class Customer(models.Model):
+    objects = Manager()
     lead = models.OneToOneField(Lead, on_delete=models.CASCADE, )
     contract = models.OneToOneField(Contract, on_delete=models.CASCADE)
 

@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, PermissionRequiredMixin
 from django.db.models import Count, Sum, F, ExpressionWrapper, DecimalField
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
@@ -8,33 +8,27 @@ from ads.models import Advertisement
 from homepage.forms import ConfirmForm
 
 
-class AdvertisementsListView(ListView):
+class AdvertisementsListView(UserPassesTestMixin, ListView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('ads.view_advertisement')
+
     template_name = 'ads/ads-list.html'
     context_object_name = 'ads'
     queryset = Advertisement.objects.select_related('product').order_by('campaign_name')
 
 
-class AdvertisementCreateView(UserPassesTestMixin, CreateView):
-    def test_func(self):
-        user = self.request.user
-        return self.request.user.is_superuser or user.has_perm('ads.add_advertisement')
+class AdvertisementCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'ads.add_advertisement'
 
     model = Advertisement
     form_class = AdvertisementForm
     template_name = 'ads/ads-create.html'
     success_url = reverse_lazy('ads:ads')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        form.instance.created_by = self.request.user
 
-        return response
-
-
-class AdvertisementUpdateView(UpdateView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('ads.change_advertisement')
+class AdvertisementUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'ads.change_advertisement'
 
     model = Advertisement
     fields = '__all__'
@@ -47,15 +41,17 @@ class AdvertisementUpdateView(UpdateView):
         )
 
 
-class AdvertisementDetailView(DetailView):
+class AdvertisementDetailView(UserPassesTestMixin, DetailView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('ads.view_advertisement')
+
     queryset = Advertisement.objects.select_related('product')
     template_name = 'ads/ads-detail.html'
 
 
-class AdvertisementDeleteView(UserPassesTestMixin, DeleteView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('ads.delete_advertisement')
+class AdvertisementDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'ads.delete_advertisement'
 
     model = Advertisement
     success_url = reverse_lazy("homepage:ads")

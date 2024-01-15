@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -7,21 +7,19 @@ from homepage.forms import ConfirmForm
 
 
 class CustomersListView(ListView):
-    queryset = Customer.objects.order_by('lead__last_name')
+    queryset = Customer.objects.select_related('lead', 'contract').order_by('lead__last_name')
     template_name = 'customers/customers-list.html'
     context_object_name = 'customers'
 
 
-class CustomerDetailView(DetailView):
-    queryset = Customer.objects.all()
+class CustomerDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'customers.view_customer'
+    queryset = Customer.objects.select_related('lead', 'contract')
     template_name = 'customers/customers-detail.html'
-    # context_object_name = 'customers'
 
 
-class CustomerCreateView(UserPassesTestMixin, CreateView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('customers.add_customer')
+class CustomerCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'customers.add_customer'
 
     model = Customer
     fields = '__all__'
@@ -29,10 +27,8 @@ class CustomerCreateView(UserPassesTestMixin, CreateView):
     success_url = reverse_lazy('customers:customers_list')
 
 
-class CustomerUpdateView(UserPassesTestMixin, UpdateView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('customers.change_customer')
+class CustomerUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'customers.change_customer'
 
     model = Customer
     fields = '__all__'
@@ -45,13 +41,10 @@ class CustomerUpdateView(UserPassesTestMixin, UpdateView):
         )
 
 
-class CustomerDeleteView(UserPassesTestMixin, DeleteView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('customers.delete_lead')
+class CustomerDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'customers.delete_customer'
 
     model = Customer
     form_class = ConfirmForm
     template_name = 'customers/customers-delete.html'
     success_url = reverse_lazy('customers:customers_list')
-

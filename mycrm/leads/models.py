@@ -1,9 +1,12 @@
 from django.db import models
+from django.db.models import Manager
 
 from ads.models import Advertisement
 
 
 class Lead(models.Model):
+    objects = Manager()
+
     class Meta:
         verbose_name = 'lead'
 

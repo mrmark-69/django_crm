@@ -1,10 +1,12 @@
 from django.db import models
+from django.db.models import Manager
 from django.urls import reverse
 
 from products.models import Product
 
 
 class Advertisement(models.Model):
+    objects = Manager()
     campaign_name = models.TextField(null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     promotion_channel = models.CharField(max_length=255, null=False, blank=True)

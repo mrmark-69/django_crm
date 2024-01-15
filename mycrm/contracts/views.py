@@ -1,5 +1,4 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.shortcuts import render
+from django.contrib.auth.mixins import UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
@@ -42,15 +41,15 @@ class ContractUpdateView(UserPassesTestMixin, UpdateView):
         )
 
 
-class ContractDetailView(DetailView):
+class ContractDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'contracts.view_contract'
+
     queryset = Contract.objects.select_related('product')
     template_name = "contracts/contracts-detail.html"
 
 
-class ContractDeleteView(DeleteView):
-    def test_func(self):
-        user = self.request.user
-        return user.is_superuser or user.has_perm('contracts.delete_contract')
+class ContractDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'contracts.delete_contract'
 
     model = Contract
     form_class = ConfirmForm

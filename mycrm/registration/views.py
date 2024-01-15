@@ -17,5 +17,6 @@ def login_user(request):
 
 
 def logout_user(request):
+    """Функция возвращающая пользователя при выходе на домашнюю страницу"""
     logout(request)
     return redirect('homepage:home')

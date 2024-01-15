@@ -1,9 +1,12 @@
 from django.db import models
+from django.db.models import Manager
 
 from products.models import Product
 
 
 class Contract(models.Model):
+    objects = Manager()
+
     class Meta:
         verbose_name = 'contract'
 

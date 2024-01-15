@@ -5,9 +5,9 @@ from products.models import Product
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = "id", "name", "description_short",
-    list_display_links = "id", "name",
-    ordering = "id", "name",
+    list_display = "id", "name", "description_short"
+    list_display_links = "id", "name"
+    ordering = "id", "name"
     search_fields = "name", "description", "id"
     fieldsets = [
         (None, {

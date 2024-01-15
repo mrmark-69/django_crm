@@ -1,24 +1,18 @@
-from django.shortcuts import render
+from django.views.generic import ListView
 
 from ads.models import Advertisement
-from customers.models import Customer
-from leads.models import Lead
-from products.models import Product
+
+from django.db.models import Count
 
 
-def statistic(request):
-    products_count = Product.objects.count()
-    advertisements_count = Advertisement.objects.count()
-    leads_count = Lead.objects.count()
-    customers_count = Customer.objects.count()
-    context = {
-        'products_count': products_count,
-        'advertisements_count': advertisements_count,
-        'leads_count': leads_count,
-        'customers_count': customers_count,
-    }
-    return render(
-        request,
-        'homepage/users/index.html',
-        context=context
-    )
+class GeneralStatisticListView(ListView):
+    model = Advertisement
+    template_name = 'homepage/users/index.html'
+
+    def get_queryset(self):
+        queryset = Advertisement.objects.annotate(
+            products_count=Count('product__price', distinct=True),
+            advertisements_count=Count('pk', distinct=True),
+            leads_count=Count('lead__pk', distinct=True),
+            customers_count=Count('lead__customer', distinct=True),
+        )
