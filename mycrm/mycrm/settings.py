@@ -108,11 +108,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mycrm',
-        'USER': 'admin',
-        'PASSWORD': '4210',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
+            }
 }
 
 # Password validation
