@@ -53,5 +53,5 @@ class ProductDeleteView(UserPassesTestMixin, DeleteView):
 
     model = Product
     form_class = ConfirmForm
-    success_url = reverse_lazy("products:services_list")
+    success_url = reverse_lazy("products:products_list")
     template_name = "products/products-delete.html"
