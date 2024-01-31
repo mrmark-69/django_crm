@@ -1,0 +1,46 @@
+[
+  {
+    "model": "leads.lead",
+    "pk": 1,
+    "fields": {
+      "first_name": "Karl",
+      "last_name": "Marks",
+      "phone": "+123453659874",
+      "email": "karl@gmail.com",
+      "campaign": 1
+    }
+  },
+  {
+    "model": "leads.lead",
+    "pk": 2,
+    "fields": {
+      "first_name": "Вольдемар",
+      "last_name": "Третьяк",
+      "phone": "+24568792546",
+      "email": "voldemar@mail.com",
+      "campaign": 1
+    }
+  },
+  {
+    "model": "leads.lead",
+    "pk": 3,
+    "fields": {
+      "first_name": "Иван",
+      "last_name": "Первомайский",
+      "phone": "+42567413654",
+      "email": "ivan@gmail.com",
+      "campaign": 1
+    }
+  },
+  {
+    "model": "leads.lead",
+    "pk": 5,
+    "fields": {
+      "first_name": "Adam",
+      "last_name": "Smith",
+      "phone": "+14568723169",
+      "email": "smith@domain.com",
+      "campaign": 1
+    }
+  }
+]

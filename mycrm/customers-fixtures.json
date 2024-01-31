@@ -1,0 +1,1 @@
+[{"model": "customers.customer", "pk": 5, "fields": {"lead": 1, "contract": 13}}, {"model": "customers.customer", "pk": 6, "fields": {"lead": 5, "contract": 14}}]
