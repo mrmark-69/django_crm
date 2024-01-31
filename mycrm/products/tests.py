@@ -7,10 +7,17 @@ from products.models import Product
 
 class ProductCreateViewTestCase(TestCase):
     def setUp(self):
+        super().setUp()
+        self.admin_user = User.objects.create_superuser(username='admin', password='password')
         self.product_name = "service number unknown"
         Product.objects.filter(name=self.product_name).delete()
 
+    def tearDown(self):
+        self.admin_user.delete()
+        super().tearDown()
+
     def test_create_product(self):
+        self.client.login(username='admin', password='password')
         response = self.client.post(
             reverse('products:add_product'),
             {
@@ -28,25 +35,40 @@ class ProductCreateViewTestCase(TestCase):
 class ProductDetailViewTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.admin_user = User.objects.create_superuser(username='admin', password='password')
-        cls.product_name = "product unknown"
+        super().setUpClass()
+        cls.admin = User.objects.create_superuser(username='admin', password='password')
+        cls.product_name = "product noname"
         cls.product = Product.objects.create(name=cls.product_name, price='999')
 
     @classmethod
     def tearDownClass(cls):
         cls.product.delete()
-        cls.admin_user.delete()
+        cls.admin.delete()
+        super().tearDownClass()
+
+    def setUp(self) -> None:
+        self.client.force_login(self.admin)
 
     def test_get_product(self):
-        self.client.login(username='admin', password='password')
         response = self.client.get(
             reverse("products:product_details", kwargs={"pk": self.product.pk})
         )
         self.assertEqual(response.status_code, 200)
 
     def test_get_product_and_check_content(self):
-        self.client.login(username='admin', password='password')
         response = self.client.get(
             reverse("products:product_details", kwargs={"pk": self.product.pk})
         )
         self.assertContains(response, self.product_name)
+
+    def test_get_product_and_check_template_used(self):
+        response = self.client.get(
+            reverse("products:product_details", kwargs={"pk": self.product.pk})
+        )
+        self.assertTemplateUsed(response, "products/products-detail.html")
+
+    def test_get_product_with_invalid_pk(self):
+        response = self.client.get(
+            reverse("products:product_details", kwargs={"pk": 0})
+        )
+        self.assertEqual(response.status_code, 404)
