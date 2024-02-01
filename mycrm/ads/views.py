@@ -41,7 +41,7 @@ class AdvertisementUpdateView(PermissionRequiredMixin, UpdateView):
         )
 
 
-class AdvertisementDetailView(UserPassesTestMixin, DetailView):
+class AdvertisementDetailsView(UserPassesTestMixin, DetailView):
     def test_func(self):
         user = self.request.user
         return user.is_superuser or user.has_perm('ads.view_advertisement')

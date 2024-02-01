@@ -72,3 +72,17 @@ class ProductDetailViewTestCase(TestCase):
             reverse("products:product_details", kwargs={"pk": 0})
         )
         self.assertEqual(response.status_code, 404)
+
+
+class ProductListViewTestCase(TestCase):
+    fixtures = ['products-fixtures.json']
+
+    def test_products(self):
+        response = self.client.get(reverse('products:products_list'))
+        self.assertQuerysetEqual(
+            qs=Product.objects.all(),
+            values=(p.pk for p in response.context['products']),
+            transform=lambda p: p.pk,
+            ordered=False
+        )
+        self.assertTemplateUsed(response, 'products/products-list.html')
