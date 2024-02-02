@@ -54,7 +54,7 @@ class AdvertisementDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'ads.delete_advertisement'
 
     model = Advertisement
-    success_url = reverse_lazy("homepage:ads")
+    success_url = reverse_lazy("ads:ads")
     form_class = ConfirmForm
     template_name = "ads/ads-delete.html"
 

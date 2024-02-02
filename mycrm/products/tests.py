@@ -8,12 +8,12 @@ from products.models import Product
 class ProductCreateViewTestCase(TestCase):
     def setUp(self):
         super().setUp()
-        self.admin_user = User.objects.create_superuser(username='admin', password='password')
+        self.superuser = User.objects.create_superuser(username='admin', password='password')
         self.product_name = "service number unknown"
         Product.objects.filter(name=self.product_name).delete()
 
     def tearDown(self):
-        self.admin_user.delete()
+        self.superuser.delete()
         super().tearDown()
 
     def test_create_product(self):
@@ -30,9 +30,10 @@ class ProductCreateViewTestCase(TestCase):
         self.assertTrue(
             Product.objects.filter(name=self.product_name).exists()
         )
+        self.assertEqual(Product.objects.count(), 1)
 
 
-class ProductDetailViewTestCase(TestCase):
+class ProductDetailViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -75,7 +76,6 @@ class ProductDetailViewTestCase(TestCase):
 
 
 class ProductListViewTestCase(TestCase):
-    fixtures = ['products-fixtures.json']
 
     def test_products(self):
         response = self.client.get(reverse('products:products_list'))
