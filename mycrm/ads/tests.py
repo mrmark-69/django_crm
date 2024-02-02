@@ -11,7 +11,7 @@ class AdvertisementsListViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.admin = User.objects.create_superuser(username='admin', password='password')
+        cls.admin = User.objects.create_superuser(username='ads_admin', password='password')
 
     @classmethod
     def tearDownClass(cls):
@@ -19,6 +19,7 @@ class AdvertisementsListViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self) -> None:
+        super().setUp()
         self.client.force_login(self.admin)
 
     def test_ads_view(self):
@@ -33,7 +34,7 @@ class AdvertisementsListViewTest(TestCase):
         self.assertIn(str(settings.LOGIN_URL), response.url)
 
 
-class AdvertisementDetailsViewTestCase(TestCase):
+class AdvertisementDetailsViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -44,8 +45,10 @@ class AdvertisementDetailsViewTestCase(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.user.delete()
+        super().tearDownClass()
 
     def setUp(self):
+        super().setUp()
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.advertisement = Advertisement.objects.create(
@@ -76,8 +79,9 @@ class AdvertisementCreateViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.superuser = User.objects.create_superuser(username='test_admin', password='password')
-        cls.user_with_permission = User.objects.create_user(username='test_user', password='password')
+        cls.superuser = User.objects.create_superuser(username='test_admin',
+                                                      password='password')  # Суперпользователь для создания продукта.
+        cls.user_with_permission = User.objects.create_user(username='test_user', password='password') # Пользователь
         permission = Permission.objects.get(codename='add_advertisement')
         cls.user_with_permission.user_permissions.add(permission)
         cls.user_without_permission = User.objects.create_user(username='test_user_1', password='password')
@@ -90,8 +94,10 @@ class AdvertisementCreateViewTest(TestCase):
         cls.superuser.delete()
         cls.user_with_permission.delete()
         cls.user_without_permission.delete()
+        super().tearDownClass()
 
     def setUp(self):
+        super().setUp()
         self.product = Product.objects.create(name='Test Product', price='333')
 
     def tearDown(self):
@@ -110,7 +116,7 @@ class AdvertisementCreateViewTest(TestCase):
         self.assertTemplateUsed(response, 'ads/ads-create.html')  # Проверяю, что используется правильный шаблон
 
     def test_create_advertisement(self):
-        self.client.force_login(self.superuser)  # Пользователь с правом доступа.
+        self.client.force_login(self.superuser)  # Суперпользователь.
         response = self.client.post(
             self.url,
             {

@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -6,7 +6,8 @@ from customers.models import Customer
 from homepage.forms import ConfirmForm
 
 
-class CustomersListView(ListView):
+class CustomersListView(PermissionRequiredMixin, ListView):
+    permission_required = 'customers.view_customer'
     queryset = Customer.objects.select_related('lead', 'contract').order_by('lead__last_name')
     template_name = 'customers/customers-list.html'
     context_object_name = 'customers'

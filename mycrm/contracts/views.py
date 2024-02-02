@@ -7,7 +7,10 @@ from contracts.models import Contract
 from homepage.forms import ConfirmForm
 
 
-class ContractsListView(ListView):
+class ContractsListView(UserPassesTestMixin, ListView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('contracts.view_contract')
     template_name = 'contracts/contracts-list.html'
     context_object_name = 'contracts'
     queryset = Contract.objects.select_related('product').order_by('date_signed')

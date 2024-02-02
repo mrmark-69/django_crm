@@ -6,7 +6,7 @@ from homepage.forms import ConfirmForm
 from products.models import Product
 
 
-class ProductsListView(ListView):
+class ProductsListView(LoginRequiredMixin, ListView):
     queryset = Product.objects.all()
     template_name = 'products/products-list.html'
     context_object_name = 'products'

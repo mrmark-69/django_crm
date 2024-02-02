@@ -6,7 +6,11 @@ from homepage.forms import ConfirmForm
 from leads.models import Lead
 
 
-class LeadsListView(ListView):
+class LeadsListView(UserPassesTestMixin, ListView):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.has_perm('leads.view_lead')
+
     template_name = 'leads/leads-list.html'
     context_object_name = 'leads'
     queryset = (Lead.objects.select_related('campaign')).order_by('last_name')

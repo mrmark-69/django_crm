@@ -8,7 +8,7 @@ from products.models import Product
 class ProductCreateViewTestCase(TestCase):
     def setUp(self):
         super().setUp()
-        self.superuser = User.objects.create_superuser(username='admin', password='password')
+        self.superuser = User.objects.create_superuser(username='product_admin', password='password')
         self.product_name = "service number unknown"
         Product.objects.filter(name=self.product_name).delete()
 
@@ -17,7 +17,7 @@ class ProductCreateViewTestCase(TestCase):
         super().tearDown()
 
     def test_create_product(self):
-        self.client.login(username='admin', password='password')
+        self.client.force_login(self.superuser)
         response = self.client.post(
             reverse('products:add_product'),
             {
@@ -37,7 +37,7 @@ class ProductDetailViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.admin = User.objects.create_superuser(username='admin', password='password')
+        cls.admin = User.objects.create_superuser(username='product_admin', password='password')
         cls.product_name = "product noname"
         cls.product = Product.objects.create(name=cls.product_name, price='999')
 
@@ -48,7 +48,11 @@ class ProductDetailViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self) -> None:
+        super().setUp()
         self.client.force_login(self.admin)
+
+    def tearDown(self):
+        super().tearDown()
 
     def test_get_product(self):
         response = self.client.get(
@@ -76,6 +80,19 @@ class ProductDetailViewTest(TestCase):
 
 
 class ProductListViewTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_superuser(username='products_admin', password='password')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+        super().tearDownClass()
+
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.user)
 
     def test_products(self):
         response = self.client.get(reverse('products:products_list'))
