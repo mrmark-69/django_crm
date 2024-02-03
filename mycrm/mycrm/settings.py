@@ -107,9 +107,9 @@ WSGI_APPLICATION = 'mycrm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DATABASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres_db',
+            }
 }
 
 # Password validation
