@@ -19,7 +19,6 @@ class AdvertisementsListViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self) -> None:
-        super().setUp()
         self.client.force_login(self.admin)
 
     def test_ads_view(self):
@@ -48,7 +47,6 @@ class AdvertisementDetailsViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self):
-        super().setUp()
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.advertisement = Advertisement.objects.create(
@@ -60,7 +58,6 @@ class AdvertisementDetailsViewTest(TestCase):
     def tearDown(self):
         self.advertisement.delete()
         self.product.delete()
-        super().tearDown()
 
     def test_advertisement_details(self):
         response = self.client.get(reverse('ads:ads_details', args=[self.advertisement.pk]))
@@ -97,12 +94,10 @@ class AdvertisementCreateViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self):
-        super().setUp()
         self.product = Product.objects.create(name='Test Product', price='333')
 
     def tearDown(self):
         self.product.delete()
-        super().tearDown()
 
     def test_permission_required(self):
         self.client.force_login(self.user_without_permission)  # Пользователь без прав доступа.

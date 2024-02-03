@@ -37,7 +37,6 @@ class ContractListViewTest(TestCase):
 
 class ContractCreateViewTest(TestCase):
     def setUp(self):
-        super().setUp()
         self.superuser = User.objects.create_superuser(username='contracts_admin', password='password')
         self.product_name = "test_product"
         self.contract_name = 'test_contract'
@@ -47,7 +46,6 @@ class ContractCreateViewTest(TestCase):
     def tearDown(self):
         self.product.delete()
         self.superuser.delete()
-        super().tearDown()
 
     def test_create_contract(self):
         self.client.force_login(self.superuser)
@@ -83,7 +81,6 @@ class ContractDetailViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self):
-        super().setUp()
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.contract = Contract.objects.create(
@@ -98,7 +95,6 @@ class ContractDetailViewTest(TestCase):
     def tearDown(self):
         self.contract.delete()
         self.product.delete()
-        super().tearDown()
 
     def test_contract_details(self):
         response = self.client.get(reverse('contracts:contracts_detail', args=[self.contract.pk]))

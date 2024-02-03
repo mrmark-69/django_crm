@@ -7,14 +7,12 @@ from products.models import Product
 
 class ProductCreateViewTestCase(TestCase):
     def setUp(self):
-        super().setUp()
         self.superuser = User.objects.create_superuser(username='product_admin', password='password')
         self.product_name = "service number unknown"
         Product.objects.filter(name=self.product_name).delete()
 
     def tearDown(self):
         self.superuser.delete()
-        super().tearDown()
 
     def test_create_product(self):
         self.client.force_login(self.superuser)
@@ -48,11 +46,10 @@ class ProductDetailViewTest(TestCase):
         super().tearDownClass()
 
     def setUp(self) -> None:
-        super().setUp()
         self.client.force_login(self.admin)
 
     def tearDown(self):
-        super().tearDown()
+        self.client.logout()
 
     def test_get_product(self):
         response = self.client.get(
@@ -91,7 +88,6 @@ class ProductListViewTestCase(TestCase):
         super().tearDownClass()
 
     def setUp(self):
-        super().setUp()
         self.client.force_login(self.user)
 
     def test_products(self):

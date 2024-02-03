@@ -43,7 +43,6 @@ class CustomerListViewTest(TestCase):
 
 class CustomerCreateViewTest(TestCase):
     def setUp(self):
-        super().setUp()
         self.superuser = User.objects.create_superuser(username='customer_admin', password='password')
         self.product = Product.objects.create(name='test_product', price='666')
         self.campaign = Advertisement.objects.create(
@@ -74,7 +73,6 @@ class CustomerCreateViewTest(TestCase):
         self.lead.delete()
         self.contract.delete()
         self.superuser.delete()
-        super().tearDown()
 
     def test_create_contract(self):
         self.client.force_login(self.superuser)
@@ -102,6 +100,7 @@ class CustomerDetailsViewTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.user.delete()
+        super().tearDownClass()
 
     def setUp(self):
         self.client.force_login(self.user)
@@ -134,7 +133,6 @@ class CustomerDetailsViewTest(TestCase):
         self.lead.delete()
         self.campaign.delete()
         self.product.delete()
-        super().tearDown()
 
     def test_customer_details(self):
         response = self.client.get(reverse('customers:customers_detail', args=[self.customer.pk]))
