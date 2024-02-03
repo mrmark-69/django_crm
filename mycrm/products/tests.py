@@ -5,10 +5,10 @@ from django.urls import reverse
 from products.models import Product
 
 
-class ProductCreateViewTestCase(TestCase):
+class ProductCreateViewTest(TestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser(username='product_admin', password='password')
-        self.product_name = "service number unknown"
+        self.product_name = "product number unknown"
         Product.objects.filter(name=self.product_name).delete()
 
     def tearDown(self):
@@ -35,7 +35,7 @@ class ProductDetailViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.admin = User.objects.create_superuser(username='product_admin', password='password')
+        cls.admin = User.objects.create_superuser(username='admin', password='password')
         cls.product_name = "product noname"
         cls.product = Product.objects.create(name=cls.product_name, price='999')
 
@@ -76,19 +76,14 @@ class ProductDetailViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class ProductListViewTestCase(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_superuser(username='products_admin', password='password')
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
-        super().tearDownClass()
+class ProductListViewTest(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create_superuser(username='products_admin', password='password')
         self.client.force_login(self.user)
+
+    def tearDown(self):
+        self.user.delete()
 
     def test_products(self):
         response = self.client.get(reverse('products:products_list'))

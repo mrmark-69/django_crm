@@ -9,25 +9,19 @@ from products.models import Product
 
 
 class LeadsListViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.admin = User.objects.create_superuser(username='lead_admin', password='password')
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.admin.delete()
-        super().tearDownClass()
+    def setUp(self):
+        self.admin = User.objects.create_superuser(username='lead_admin', password='password')
 
-    def setUp(self) -> None:
-        self.client.force_login(self.admin)
+    def tearDown(self):
+        self.admin.delete()
 
     def test_leads_view(self):
+        self.client.force_login(self.admin)
         response = self.client.get(reverse('leads:leads'))
         self.assertContains(response, 'Лиды')
 
     def test_leads_view_not_authenticated(self):
-        self.client.logout()
         response = self.client.get(reverse('leads:leads'))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, str(settings.LOGIN_URL) + "?next=/leads/")
@@ -35,19 +29,11 @@ class LeadsListViewTest(TestCase):
 
 
 class LeadDetailsViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_user(username='leads_user', password='password')
-        permission = Permission.objects.get(codename='view_lead')
-        cls.user.user_permissions.add(permission)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
-        super().tearDownClass()
 
     def setUp(self):
+        self.user = User.objects.create_user(username='leads_user', password='password')
+        permission = Permission.objects.get(codename='view_lead')
+        self.user.user_permissions.add(permission)
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.campaign = Advertisement.objects.create(
@@ -64,6 +50,7 @@ class LeadDetailsViewTest(TestCase):
         )
 
     def tearDown(self):
+        self.user.delete()
         self.campaign.delete()
         self.lead.delete()
         self.product.delete()
@@ -85,12 +72,12 @@ class LeadCreateViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.superuser = User.objects.create_superuser(username='lead_test_admin',
-                                                      password='password')  # Суперпользователь для создания лида.
         cls.user_with_permission = User.objects.create_user(username='test_user',
                                                             password='password')  # Пользователь с доступом
         permission = Permission.objects.get(codename='add_lead')
+        permission_2 = Permission.objects.get(codename='view_lead')
         cls.user_with_permission.user_permissions.add(permission)
+        cls.user_with_permission.user_permissions.add(permission_2)
         cls.user_without_permission = User.objects.create_user(username='test_user_1',
                                                                password='password')  # Пользователь без доступа
         cls.url = reverse('leads:add_lead')
@@ -99,7 +86,6 @@ class LeadCreateViewTest(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.superuser.delete()
         cls.user_with_permission.delete()
         cls.user_without_permission.delete()
         super().tearDownClass()
@@ -128,7 +114,7 @@ class LeadCreateViewTest(TestCase):
         self.assertTemplateUsed(response, 'leads/leads-create.html')  # Проверяю, что используется правильный шаблон
 
     def test_create_lead(self):
-        self.client.force_login(self.superuser)  # Суперпользователь.
+        self.client.force_login(self.user_with_permission)  # Пользователь с правом создавать лида.
         response = self.client.post(
             self.url,
             {

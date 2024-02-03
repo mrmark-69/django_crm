@@ -14,27 +14,20 @@ from products.models import Product
 
 class CustomerListViewTest(TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_user(username='customer_test_user', password='password')
-        permission = Permission.objects.get(codename='view_customer')
-        cls.user.user_permissions.add(permission)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
-        super().tearDownClass()
-
     def setUp(self) -> None:
-        self.client.force_login(self.user)
+        self.user = User.objects.create_user(username='customer_test_user', password='password')
+        permission = Permission.objects.get(codename='view_customer')
+        self.user.user_permissions.add(permission)
+
+    def tearDown(self):
+        self.user.delete()
 
     def test_customers_view(self):
+        self.client.force_login(self.user)
         response = self.client.get(reverse("customers:customers_list"))
         self.assertContains(response, 'Активные клиенты')
 
     def test_customers_view_not_authenticated(self):
-        self.client.logout()
         response = self.client.get(reverse('customers:customers_list'))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, str(settings.LOGIN_URL) + "?next=/customers/")
@@ -53,10 +46,10 @@ class CustomerCreateViewTest(TestCase):
         self.lead = Lead.objects.create(
             first_name='First',
             last_name='Last',
-            phone ='+13298237382',
-            email ='f@mail.com',
-            campaign =self.campaign
-                                        )
+            phone='+13298237382',
+            email='f@mail.com',
+            campaign=self.campaign
+        )
         self.contract = Contract.objects.create(
             name='Test contract # 1',
             product=self.product,
@@ -91,18 +84,9 @@ class CustomerCreateViewTest(TestCase):
 
 
 class CustomerDetailsViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_superuser(username='customer_user', password='password')
-
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
-        super().tearDownClass()
 
     def setUp(self):
+        self.user = User.objects.create_superuser(username='customer_user', password='password')
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.campaign = Advertisement.objects.create(
@@ -128,6 +112,7 @@ class CustomerDetailsViewTest(TestCase):
         self.customer = Customer.objects.create(lead=self.lead, contract=self.contract)
 
     def tearDown(self):
+        self.user.delete()
         self.contract.delete()
         self.customer.delete()
         self.lead.delete()

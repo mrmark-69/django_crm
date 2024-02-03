@@ -8,25 +8,19 @@ from products.models import Product
 
 
 class AdvertisementsListViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.admin = User.objects.create_superuser(username='ads_admin', password='password')
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.admin.delete()
-        super().tearDownClass()
 
     def setUp(self) -> None:
-        self.client.force_login(self.admin)
+        self.admin = User.objects.create_superuser(username='ads_admin', password='password')
+
+    def tearDown(self):
+        self.admin.delete()
 
     def test_ads_view(self):
+        self.client.force_login(self.admin)
         response = self.client.get(reverse('ads:ads'))
         self.assertContains(response, 'Рекламные компании')
 
     def test_ads_view_not_authenticated(self):
-        self.client.logout()
         response = self.client.get(reverse('ads:ads'))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, str(settings.LOGIN_URL) + "?next=/ads/")
@@ -34,19 +28,11 @@ class AdvertisementsListViewTest(TestCase):
 
 
 class AdvertisementDetailsViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_user(username='test_user', password='password')
-        permission = Permission.objects.get(codename='view_advertisement')
-        cls.user.user_permissions.add(permission)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
-        super().tearDownClass()
 
     def setUp(self):
+        self.user = User.objects.create_user(username='test_user', password='password')
+        permission = Permission.objects.get(codename='view_advertisement')
+        self.user.user_permissions.add(permission)
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.advertisement = Advertisement.objects.create(
@@ -56,6 +42,7 @@ class AdvertisementDetailsViewTest(TestCase):
         )
 
     def tearDown(self):
+        self.user.delete()
         self.advertisement.delete()
         self.product.delete()
 
@@ -76,19 +63,20 @@ class AdvertisementCreateViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.superuser = User.objects.create_superuser(username='test_admin',
-                                                      password='password')  # Суперпользователь для создания продукта.
-        cls.user_with_permission = User.objects.create_user(username='test_user', password='password') # Пользователь
+        cls.user_with_permission = User.objects.create_user(username='test_user',
+                                                            password='password')  # Создаю пользователя с правами.
         permission = Permission.objects.get(codename='add_advertisement')
+        permission_2 = Permission.objects.get(codename='view_advertisement')
         cls.user_with_permission.user_permissions.add(permission)
-        cls.user_without_permission = User.objects.create_user(username='test_user_1', password='password')
+        cls.user_with_permission.user_permissions.add(permission_2)
+        cls.user_without_permission = User.objects.create_user(username='test_user_1',
+                                                               password='password')  # Создаю пользователя без прав.
         cls.url = reverse('ads:ads_new')
         cls.campaign_name = "Test Advertisement"
         Advertisement.objects.filter(campaign_name=cls.campaign_name).delete()
 
     @classmethod
     def tearDownClass(cls):
-        cls.superuser.delete()
         cls.user_with_permission.delete()
         cls.user_without_permission.delete()
         super().tearDownClass()
@@ -111,7 +99,7 @@ class AdvertisementCreateViewTest(TestCase):
         self.assertTemplateUsed(response, 'ads/ads-create.html')  # Проверяю, что используется правильный шаблон
 
     def test_create_advertisement(self):
-        self.client.force_login(self.superuser)  # Суперпользователь.
+        self.client.force_login(self.user_with_permission)  # Пользователь с правом доступа.
         response = self.client.post(
             self.url,
             {
@@ -124,10 +112,10 @@ class AdvertisementCreateViewTest(TestCase):
         self.assertRedirects(response, reverse("ads:ads"))
         self.assertTrue(
             Advertisement.objects.filter(campaign_name=self.campaign_name).exists()
-        )
+        )  # Проверяю что объект существует.
         self.assertEqual(Advertisement.objects.count(), 1)  # Проверяю, что объект был создан
         advertisement = Advertisement.objects.first()
         self.assertEqual(advertisement.campaign_name,
-                         'Test Advertisement')  # Проверяю, что заголовок соответствует введенным данным
+                         'Test Advertisement')  # Проверяю, что название соответствует введенным данным
         self.assertEqual(response.status_code,
                          302)  # Проверяю, что происходит редирект после успешного создания объекта

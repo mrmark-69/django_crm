@@ -10,18 +10,13 @@ from products.models import Product
 
 
 class ContractListViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.admin = User.objects.create_superuser(username='contract_username', password='password')
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.admin.delete()
-        super().tearDownClass()
 
     def setUp(self) -> None:
+        self.admin = User.objects.create_superuser(username='contract_username', password='password')
         self.client.force_login(self.admin)
+
+    def tearDown(self):
+        self.admin.delete()
 
     def test_contracts_view(self):
         response = self.client.get(reverse("contracts:contracts_list"))
@@ -68,19 +63,12 @@ class ContractCreateViewTest(TestCase):
 
 
 class ContractDetailViewTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_superuser(username='contracts_test_user', password='password')
-        permission = Permission.objects.get(codename='view_contract')
-        cls.user.user_permissions.add(permission)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
-        super().tearDownClass()
 
     def setUp(self):
+        self.user = User.objects.create_superuser(username='contracts_test_user',
+                                                  password='password')  # Создал пользователя
+        permission = Permission.objects.get(codename='view_contract')
+        self.user.user_permissions.add(permission)  # Добавил пользователю необходимые права.
         self.client.force_login(self.user)
         self.product = Product.objects.create(name='test_product', price='666')
         self.contract = Contract.objects.create(
@@ -93,6 +81,7 @@ class ContractDetailViewTest(TestCase):
         )
 
     def tearDown(self):
+        self.user.delete()
         self.contract.delete()
         self.product.delete()
 
