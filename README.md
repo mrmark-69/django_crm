@@ -14,7 +14,7 @@
 
 1. Первым шагом клонируйте репозиторий CRM-системы на ваше устройство:
 
-   $ git clone --depht=1 https://github.com/mrmark-69/django_crm.git
+   $ git clone --depth=1 https://github.com/mrmark-69/django_crm.git
 
 2. Перейдите в каталог проекта:
 
